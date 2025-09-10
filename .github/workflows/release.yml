@@ -19,26 +19,15 @@ jobs:
       - run: cmake --build .
       - run: cmake --build . --target test
       - run: cmake --build . --target package
-      - name: Create Release
+      - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')  # Создавать релиз только для тегов
         with:
           tag_name: v0.0.${{ github.run_number }}
-          name: Release v0.0.${{ github.run_number }}
+          release_name: Release v0.0.${{ github.run_number }}
           draft: false
           prerelease: false
           files: |
             ./helloworld-0.0.${{ github.run_number }}-Linux.deb
+            ./helloworld-0.0.${{ github.run_number }}-Linux.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./helloworld-0.0.${{ github.run_number }}-Linux.deb
-          asset_name: helloworld-0.0.${{ github.run_number }}-Linux.deb
-          asset_content_type: application/vnd.debian.binary-package
