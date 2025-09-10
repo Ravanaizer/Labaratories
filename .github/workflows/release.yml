@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: arch-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
@@ -17,8 +17,8 @@ jobs:
         with:
           submodules: true
       
-      #- name: Install dependencies
-       # run: sudo apt-get update && sudo apt-get install libboost-test-dev -y
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install libboost-test-dev -y
       
       - name: Configure CMake
         run: cmake . -DPATCH_VERSION=${{ github.run_number }}
