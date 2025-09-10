@@ -1,2 +1,1 @@
-# Labaratories
- 
+# Шаблон настройки GitHub Actions
