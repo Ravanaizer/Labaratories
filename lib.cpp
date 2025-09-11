@@ -3,5 +3,5 @@
 #include "version.h"
 
 int version() {
-    return PROJECT_VERSION_PATCH;
+    return std::to_string(PROJECT_VERSION_PATCH);
 }
