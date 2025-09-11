@@ -2,6 +2,10 @@
 
 #include "version.h"
 
-int version() {
+const char* version() {
 	return PROJECT_VERSION;
+}
+
+int version_patch () {
+	return PROJECT_VERSION_PATCH;
 }

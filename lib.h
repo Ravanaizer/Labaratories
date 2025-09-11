@@ -1,3 +1,5 @@
 #pragma once
 
-int version();
+const char* version();
+
+int version_patch();
