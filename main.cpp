@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main (int, char **) {
-    std::cout << "Version: " << std::to_string(version()) << std::endl;
+    std::cout << "Version: " << version()[0] << version()[1] << version()[2] << std::endl;
     std::cout << "Hello, world!" << std::endl;
     return 0;
 }
