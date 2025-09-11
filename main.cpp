@@ -3,7 +3,8 @@
 #include <iostream>
 
 int main (int, char **) {
-    std::cout << "Version: " << version() << std::endl;
+	auto VERSION = version();
+    std::cout << "Version: " << VERSION[1] << VERSION[2] << VERSION[3] << std::endl;
     std::cout << "Hello, world!" << std::endl;
     return 0;
 }
