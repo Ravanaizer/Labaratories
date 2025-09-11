@@ -3,5 +3,5 @@
 #include "version.h"
 
 int version() {
-	return std::to_string(PROJECT_VERSION);
+	return PROJECT_VERSION;
 }
