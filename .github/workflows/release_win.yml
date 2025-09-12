@@ -1,4 +1,4 @@
-name: 'Build C++ Project with Boost (manual install + cache)'
+name: 'Build C++ Project with Boost (choco)'
 
 on: [push, pull_request]
 
@@ -10,30 +10,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache Boost
-        uses: actions/cache@v4
-        with:
-          path: C:\local\boost_build
-          key: ${{ runner.os }}-boost-1.84.0
-          restore-keys: |
-            ${{ runner.os }}-boost-
-
-      - name: Download and Build Boost
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          curl -L -o boost.zip https://archives.boost.io/release/1.84.0/source/boost_1_84_0.zip
-          7z x boost.zip -oC:\local\
-          cd C:\local\boost_1_84_0
-          bootstrap.bat
-          b2 install --prefix=C:\local\boost_build
+      - name: Install Boost via Chocolatey
+        run: choco install boost-msvc-14.2 -y
 
       - name: Configure CMake
         run: |
           mkdir build
           cd build
-          cmake .. -DBOOST_ROOT="C:/local/boost_build"
+          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"
 
-      - name: Build Project
+      - name: Build
         run: |
           cd build
           cmake --build . --config Release
