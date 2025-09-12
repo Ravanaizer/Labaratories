@@ -1,44 +1,25 @@
-name: 'C++ CI'
+name: 'Build C++ Project with Boost (choco)'
 
-on:
-  push:
-    branches:
-      - main
-      - feature/github_actions
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: windows-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-      
-      
-      - name: Configure CMake
-        run: cmake . -DPATCH_VERSION="0.0.${{ github.run_number }}"
-      
-      - name: Build project
-        run: cmake --build .
-      
-      - name: Run tests
-        run: cmake --build . --target test
-      
-      - name: Create package
-        run: cmake --build . --target package
 
-      
-      - name: Create Release and Upload Asset
-        if: success()
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v0.0.${{ github.run_number }}
-          release_name: Release v0.0.${{ github.run_number }}
-          draft: false
-          prerelease: false
-          files: ./helloworld-0.0.${{ github.run_number }}-Win.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Boost via Chocolatey
+        run: choco install boost -y
+
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"
+
+      - name: Build
+        run: |
+          cd build
+          cmake --build . --config Release
