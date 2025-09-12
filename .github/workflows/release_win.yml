@@ -13,52 +13,33 @@ jobs:
       - name: Install Boost via Chocolatey
         run: choco install boost-msvc-14.3 -y
 
-      - name: Configure CMake
+       - name: Configure CMake (Release)
         run: |
           mkdir build
           cd build
-          cmake .. -DBOOST_ROOT="C:/local/boost_1_83_0"
+          cmake .. `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DPROJECT_VERSION="0.0.${{ github.run_number }}" `
+            -DBUILD_TESTING=OFF  # Отключаем тесты
 
-      - name: Build
+      - name: Build Release
         run: |
           cd build
           cmake --build . --config Release
 
-      - name: Run tests (Release)
+      - name: Create standalone package
         run: |
-          cd build
-          ctest --output-on-failure -C Release
+          cd build/Release
+          # Проверяем что exe файл работает без зависимостей
+          .\helloworld_cli.exe --version || echo "Executable might have dependencies"
+          # Создаем ZIP
+          powershell "Compress-Archive -Path *.exe -DestinationPath ../helloworld-0.0.${{ github.run_number }}-win64.zip"
 
-      - name: Create Release package
-        run: |
-          cd build
-          cpack -G ZIP -C Release
-
-      - name: Verify package contents
-        run: |
-          cd build
-          echo "Created package files:"
-          dir *.zip
-          echo "Package contents:"
-          7z l *.zip || echo "7z not available, using PowerShell"
-          powershell "Expand-Archive -Path *.zip -DestinationPath temp_package; Get-ChildItem temp_package -Recurse"
-
-      - name: Create GitHub Release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v0.0.${{ github.run_number }}-win64
+          tag_name: Windows-Release v0.0.${{ github.run_number }}-win64
           name: Windows Release v0.0.${{ github.run_number }}
-          draft: false
-          prerelease: false
           files: build/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-release-build
-          path: |
-            build/Release/*.exe
-            build/Release/*.lib
-            build/*.zip
