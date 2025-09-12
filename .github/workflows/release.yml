@@ -1,4 +1,4 @@
-name: 'C++ CI'
+name: 'Linux C++ Build'
 
 on:
   push:
@@ -8,9 +8,11 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

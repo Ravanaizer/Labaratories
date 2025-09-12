@@ -1,10 +1,13 @@
-name: 'Build C++ Project with Boost (choco)'
+name: 'Windows C++ Build (choco)'
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: windows-latest
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -30,16 +33,17 @@ jobs:
       - name: Create standalone package
         run: |
           cd build/Release
-          # Проверяем что exe файл работает без зависимостей
           .\helloworld_cli.exe --version || echo "Executable might have dependencies"
-          # Создаем ZIP
           powershell "Compress-Archive -Path *.exe -DestinationPath ../helloworld-0.0.${{ github.run_number }}-win64.zip"
 
       - name: Create Release
+        if: success()
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v0.0.${{ github.run_number }}-win64
           name: Windows Release v0.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
           files: build/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
