@@ -44,7 +44,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-                build/helloworld-0.0.${{ github.run_number }}-Linux.deb
-                build/helloworld-0.0.${{ github.run_number }}-Linux.tar.gz
+                helloworld-0.0.${{ github.run_number }}-Linux.deb
+                helloworld-0.0.${{ github.run_number }}-Linux.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
