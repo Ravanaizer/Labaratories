@@ -48,7 +48,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-                build/*.deb
-                build/*.tar.gz
+                *.deb
+                *.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
