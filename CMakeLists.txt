@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION ${PATCH_VERSION})
 
-project(helloworld VERSION ${PROJECT_VERSION})
+project(helloworld VERSION ${PROJECT_VERSION} ${PROJECT_VERSION_MAJOR} ${PROJECT_VERSION_MINOR} ${PROJECT_VERSION_PATCH})
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
