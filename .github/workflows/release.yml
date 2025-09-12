@@ -37,9 +37,9 @@ jobs:
       
       - name: List files (for debugging)
         run: |
-        ls -la *.deb || echo "No .deb files found"
-        ls -la *.tar.gz || echo "No .tar.gz files found"
-        ls -la *.zip || echo "No .zip files found"
+            ls -la *.deb || echo "No .deb files found"
+            ls -la *.tar.gz || echo "No .tar.gz files found"
+            ls -la *.zip || echo "No .zip files found"
       
       - name: Create Release and Upload Asset
         if: success()
