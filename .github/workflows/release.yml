@@ -31,11 +31,10 @@ jobs:
       
       - name: Create package
         run: |
-          cd build
           cpack -G DEB -C Release
           cpack -G TGZ -C Release
       
-      - name: List files (for debugging)
+      - name: List files
         run: |
             ls -la *.deb || echo "No .deb files found"
             ls -la *.tar.gz || echo "No .tar.gz files found"
