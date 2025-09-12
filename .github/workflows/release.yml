@@ -43,6 +43,8 @@ jobs:
           release_name: Release v0.0.${{ github.run_number }}
           draft: false
           prerelease: false
-          files: ./helloworld-0.0.${{ github.run_number }}-Linux.deb
+          files |
+                build/helloworld-0.0.${{ github.run_number }}-Linux.deb
+                build/helloworld-0.0.${{ github.run_number }}-Linux.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
