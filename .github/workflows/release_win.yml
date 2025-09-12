@@ -23,3 +23,42 @@ jobs:
         run: |
           cd build
           cmake --build . --config Release
+
+      - name: Run tests (Release)
+        run: |
+          cd build
+          ctest --output-on-failure -C Release
+
+      - name: Create Release package
+        run: |
+          cd build
+          cpack -G ZIP -C Release
+
+      - name: Verify package contents
+        run: |
+          cd build
+          echo "Created package files:"
+          dir *.zip
+          echo "Package contents:"
+          7z l *.zip || echo "7z not available, using PowerShell"
+          powershell "Expand-Archive -Path *.zip -DestinationPath temp_package; Get-ChildItem temp_package -Recurse"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v0.0.${{ github.run_number }}-win64
+          name: Windows Release v0.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: build/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release-build
+          path: |
+            build/Release/*.exe
+            build/Release/*.lib
+            build/*.zip
