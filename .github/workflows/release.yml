@@ -43,8 +43,8 @@ jobs:
         if: success()
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: Linux on Ubuntu  Release v0.0.${{ github.run_number }}
-          release_name: Release v0.0.${{ github.run_number }}
+          tag_name: v0.0.${{ github.run_number }}
+          release_name: Linux Release on Ubuntu v0.0.${{ github.run_number }}
           draft: false
           prerelease: false
           files: |
