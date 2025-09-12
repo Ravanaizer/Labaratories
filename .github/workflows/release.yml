@@ -30,10 +30,16 @@ jobs:
         run: cmake --build . --target test
       
       - name: Create package
-        run: cmake --build . --target package
+        run: |
+          cd build
+          cpack -G DEB -C Release
+          cpack -G TGZ -C Release
       
       - name: List files (for debugging)
-        run: ls -la *.deb || echo "No .deb files found"
+        run: |
+        ls -la *.deb || echo "No .deb files found"
+        ls -la *.tar.gz || echo "No .tar.gz files found"
+        ls -la *.zip || echo "No .zip files found"
       
       - name: Create Release and Upload Asset
         if: success()
@@ -44,7 +50,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-                helloworld-0.0.${{ github.run_number }}-Linux.deb
-                helloworld-0.0.${{ github.run_number }}-Linux.tar.gz
+                build/*.deb
+                build/*.tar.gz
+                build/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
