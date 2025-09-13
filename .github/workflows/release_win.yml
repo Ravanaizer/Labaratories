@@ -33,7 +33,7 @@ jobs:
       - name: Create standalone package
         run: |
           cd build/Release
-          .\helloworld_cli.exe --version || echo "Executable might have dependencies"
+          .\helloworld_cli.exe || echo "Executable might have dependencies"
           powershell "Compress-Archive -Path *.exe -DestinationPath ../helloworld-0.0.${{ github.run_number }}-win64.zip"
 
       - name: Create Release
