@@ -40,6 +40,16 @@ jobs:
             ls -la *.deb || echo "No .deb files found"
             ls -la *.tar.gz || echo "No .tar.gz files found"
 
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            *.deb
+            *.tar.gz
+
+
   Win-build:
     runs-on: windows-latest
 
@@ -73,6 +83,15 @@ jobs:
           .\helloworld_cli.exe || echo "Executable might have dependencies"
           powershell "Compress-Archive -Path *.exe -DestinationPath ../helloworld-0.0.${{ github.run_number }}-win64.zip"
 
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-packages
+          path: |
+            build/*.zip
+            build/*.exe
+
+
   Release:
     runs-on: ubuntu-latest
 
@@ -82,6 +101,23 @@ jobs:
       contents: write
 
     steps:
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: '*'
+          merge-multiple: true
+
+      - name: List downloaded files
+        run: |
+          echo "Скачанные артефакты:"
+          find artifacts -type f -name "*" | head -20
+          echo "Содержимое artifacts:"
+          ls -la artifacts/
+
+
+
       - name: Create Release and Upload Asset
         if: success()
         uses: softprops/action-gh-release@v1
