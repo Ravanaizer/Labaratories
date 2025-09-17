@@ -1,0 +1,66 @@
+name: 'C++ Build on Arch'
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  Linux-build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install dependencies
+        run: sudo pacman -Syyuu && sudo pacman -S boost -y
+
+      - name: Configure CMake
+        run: cmake . -DPROJECT_VERSION="0.0.${{ github.run_number }}"
+
+      - name: Build project
+        run: cmake --build .
+
+      - name: Run tests
+        run: cmake --build . --target test
+
+      - name: Create package
+        run: |
+          cpack -G DEB -C Release
+          cpack -G TGZ -C Release
+
+      - name: List files
+        run: |
+            ls -la *.deb || echo "No .deb files found"
+            ls -la *.tar.gz || echo "No .tar.gz files found"
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            *.deb
+            *.tar.gz
+
+      - name: Create Release and Upload Asset
+        if: success()
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v0.0.${{ github.run_number }}
+          release_name: v0.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+          files: |
+                *.deb
+                *.tar.gz
+                *.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
