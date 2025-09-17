@@ -20,8 +20,10 @@ jobs:
         with:
           submodules: true
 
-      - name: Install dependencies
-        run: sudo pacman -Syyuu && sudo pacman -S boost -y
+      - name: Update Arch Linux and install dependencies
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm base-devel cmake boost boost-libs git
 
       - name: Configure CMake
         run: cmake . -DPROJECT_VERSION="0.0.${{ github.run_number }}"
@@ -34,12 +36,10 @@ jobs:
 
       - name: Create package
         run: |
-          cpack -G DEB -C Release
           cpack -G TGZ -C Release
 
       - name: List files
         run: |
-            ls -la *.deb || echo "No .deb files found"
             ls -la *.tar.gz || echo "No .tar.gz files found"
 
       - name: Upload Linux artifacts
@@ -47,7 +47,6 @@ jobs:
         with:
           name: linux-packages
           path: |
-            *.deb
             *.tar.gz
 
       - name: Create Release and Upload Asset
@@ -59,8 +58,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-                *.deb
                 *.tar.gz
-                *.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
