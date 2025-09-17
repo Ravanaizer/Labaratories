@@ -62,8 +62,8 @@ jobs:
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v0.0.${{ github.run_number }}
-          name: Release v0.0.${{ github.run_number }}
+          tag_name: Arch-v0.0.${{ github.run_number }}
+          name: Arch Release v0.0.${{ github.run_number }}
           draft: false
           prerelease: false
           files: |
