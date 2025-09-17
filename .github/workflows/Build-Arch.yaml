@@ -6,13 +6,10 @@ permissions:
   contents: write
 
 jobs:
-  Linux-build:
+  Linux-build-arch:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
-
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout code
@@ -21,9 +18,9 @@ jobs:
           submodules: true
 
       - name: Update Arch Linux and install dependencies
-      run: |
-        pacman -Syu --noconfirm
-        pacman -S --noconfirm base-devel cmake boost boost-libs git
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm base-devel cmake boost boost-libs git
 
       - name: Configure CMake
         run: cmake . -DPROJECT_VERSION="0.0.${{ github.run_number }}"
@@ -40,24 +37,36 @@ jobs:
 
       - name: List files
         run: |
-            ls -la *.tar.gz || echo "No .tar.gz files found"
+          ls -la *.tar.gz || echo "No .tar.gz files found"
 
-      - name: Upload Linux artifacts
+      - name: Upload Arch Linux artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: linux-packages
+          name: arch-packages
           path: |
             *.tar.gz
 
+  Release-arch:
+    runs-on: ubuntu-latest
+    needs: Linux-build-arch
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: arch-packages
+          path: artifacts
+
       - name: Create Release and Upload Asset
-        if: success()
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v0.0.${{ github.run_number }}
-          release_name: v0.0.${{ github.run_number }}
+          name: Release v0.0.${{ github.run_number }}
           draft: false
           prerelease: false
           files: |
-                *.tar.gz
+            artifacts/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
